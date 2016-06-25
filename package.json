@@ -1,0 +1,58 @@
+{
+  "name": "recordType",
+  "version": "1.0.0",
+  "description": "The record data type",
+  "main": "transpiled/source/index.js",
+  "scripts": {
+    "prepublish": "npm run build",
+    "build": "rm -rf './transpiled/' && mkdir './transpiled/' && babel './source/**/index.js' -d './transpiled/'",
+    "test": "mocha --compilers js:babel-register './source/**/test.js'",
+    "start": "npm-run-all --parallel watch:build watch:test",
+    "lint": "eslint './source/'",
+    "watch": "npm-run-all --parallel watch:test watch:lint watch:build",
+    "watch:build": "chokidar './source/' --initial --command 'npm run build --silent'",
+    "watch:test": "chokidar './source/' --initial --command 'npm run test --silent'",
+    "watch:lint": "chokidar './source/' --initial --command 'npm run lint --silent'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krainboltgreene/recordType.js.git"
+  },
+  "keywords": [
+    "record",
+    "type"
+  ],
+  "author": "Kurtis Rainbolt-Greene (@krainboltgreene) <me@kurtisrainboltgreene.name>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/krainboltgreene/recordType.js/issues"
+  },
+  "homepage": "https://github.com/krainboltgreene/recordType.js#readme",
+  "devDependencies": {
+    "babel": "^6",
+    "babel-cli": "^6",
+    "babel-core": "^6",
+    "babel-eslint": "^6",
+    "babel-plugin-transform-es2015-destructuring": "^6",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6",
+    "babel-plugin-transform-exponentiation-operator": "^6",
+    "babel-plugin-transform-export-extensions": "^6",
+    "babel-plugin-transform-object-rest-spread": "^6",
+    "chai": "^3",
+    "chokidar-cli": "^1",
+    "eslint": "^2",
+    "eslint-plugin-babel": "^3",
+    "eslint-plugin-immutable": "^1",
+    "eslint-plugin-import": "^1",
+    "eslint-plugin-mocha": "^3",
+    "eslint-plugin-node": "^1",
+    "greenkeeper": "^2",
+    "mocha": "^2",
+    "npm": "^3",
+    "npm-run-all": "^2"
+  },
+  "dependencies": {
+    "immu": "^2.0.1",
+    "ramda": "0.21.0"
+  }
+}
