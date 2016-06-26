@@ -52,7 +52,6 @@
     "npm-run-all": "^2"
   },
   "dependencies": {
-    "immu": "^2.0.1",
     "ramda": "0.21.0"
   }
 }
