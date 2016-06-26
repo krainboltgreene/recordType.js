@@ -1,21 +1,23 @@
-import {head} from "ramda"
-import {map} from "ramda"
-import {contains} from "ramda"
 import {all} from "ramda"
+import {any} from "ramda"
 import {call} from "ramda"
+import {contains} from "ramda"
+import {equals} from "ramda"
+import {filter} from "ramda"
+import {flip} from "ramda"
+import {head} from "ramda"
+import {isArrayLike} from "ramda"
+import {length} from "ramda"
+import {map} from "ramda"
 import {not} from "ramda"
 import {pipe} from "ramda"
+import {type} from "ramda"
 import {without} from "ramda"
-import {flip} from "ramda"
-import {filter} from "ramda"
-import {length} from "ramda"
-import {equals} from "ramda"
-import immu from "immu"
 
 // : Attribute shaped Array like [Anything named "key", Anything named "value"]
 // : Defintion shaped Array like [Anything named "key", Type, Maybe Anything named "default"]
 // : Column shaped Array like [Anything named "key", Array like [Type, Anything named "default"]]
-// : Table shaped Array of Definition
+// : Table shaped Map of Definition
 // : Row shaped Array of Attribute
 
 // : Array of Anything -> Anything -> Boolean
@@ -25,11 +27,23 @@ const using = flip(call)
 // : Array of Array -> Array of Anything
 const asHeads = map(head)
 // : Defintion -> Column
-const definitionToColumn = ([key, type, defaultValue]) => [key, [type, defaultValue]]
-// : Array of Defintion -> Array of Column
+const definitionToColumn = ([key, cast, defaultValue]) => [key, [cast, defaultValue]]
+// : Table -> Array of Column
 const definitionsToColumns = map(definitionToColumn)
-// : Array of Definition -> Array of Definition
+// : Table -> Maybe Array of Definition
 const onlyRequired = filter(pipe(length, equals(2)))
+// : Array of Anything -> Boolean
+const hasNonArray = any(pipe(isArrayLike, not))
+// : [Row, Table] -> Array of Anything -> Row
+const withDefault = ([row, table]) => (key) => {
+  const [, defaultValue] = table.get(key)
+
+  if (typeof row.get(key) === "undefined" && typeof defaultValue !== "undefined") {
+    return [key, defaultValue]
+  }
+
+  return [key, row.get(key)]
+}
 
 // : Table-> Row -> Map
 export default function record (definitions = []) {
@@ -42,26 +56,31 @@ export default function record (definitions = []) {
   return function instantiate (attributes = []) {
     const givenKeys = asHeads(attributes)
 
+    if (hasNonArray(attributes)) {
+      throw new Error(`You provided a arguments that contain a non-array object: ${JSON.stringify(attributes)}`)
+    }
+
     if (hasSuperfluousKeys(givenKeys)) {
       throw new Error(`You provided ${JSON.stringify(without(definedKeys, givenKeys))}, but the record doesn't define those`)
     }
 
     if (isMissingRequiredKeys(givenKeys)) {
-      throw new Error(`You provided no value for ${JSON.stringify(without(givenKeys, definedKeys))}`)
+      throw new Error(`You provided no value for ${JSON.stringify(without(givenKeys, requiredKeys))}`)
     }
+    const fields = map(withDefault([new Map(attributes), table]), definedKeys)
 
-    attributes.forEach(([key, value]) => {
-      const [type, defaultValue] = table.get(key)
+    fields.forEach(([key, value]) => {
+      const [cast, defaultValue] = table.get(key)
 
       if (typeof value === "undefined" && typeof defaultValue === "undefined") {
-        throw new Error(`You provided no value (or default value) for ${key}, which must be an ${type}`)
+        throw new Error(`You provided no value (or default value) for ${key}, which must be an ${cast}`)
       }
 
-      if (!(typeof (value || defaultValue) === type)) {
-        throw new Error(`You provided ${JSON.stringify(value)} for ${key}, which is limited to ${type}`)
+      if (type(value || defaultValue) !== cast) {
+        throw new Error(`You provided ${JSON.stringify(value)} for ${key}, which is limited to ${cast}`)
       }
     })
 
-    return immu(new Map(attributes))
+    return new Map(fields)
   }
 }
