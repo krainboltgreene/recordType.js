@@ -32,7 +32,7 @@
     "babel": "^6",
     "babel-cli": "^6",
     "babel-core": "^6",
-    "babel-eslint": "^6",
+    "babel-eslint": "^7.2.1",
     "babel-plugin-transform-es2015-destructuring": "^6",
     "babel-plugin-transform-es2015-modules-commonjs": "^6",
     "babel-plugin-transform-exponentiation-operator": "^6",
@@ -40,18 +40,18 @@
     "babel-plugin-transform-object-rest-spread": "^6",
     "chai": "^3",
     "chokidar-cli": "^1",
-    "eslint": "^2",
-    "eslint-plugin-babel": "^3",
+    "eslint": "^3.18.0",
+    "eslint-plugin-babel": "^4.1.1",
     "eslint-plugin-immutable": "^1",
-    "eslint-plugin-import": "^1",
-    "eslint-plugin-mocha": "^3",
-    "eslint-plugin-node": "^1",
-    "greenkeeper": "^2",
-    "mocha": "^2",
-    "npm": "^3",
-    "npm-run-all": "^2"
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-mocha": "^4.9.0",
+    "eslint-plugin-node": "^4.2.1",
+    "greenkeeper": "^4.2.1",
+    "mocha": "^3.2.0",
+    "npm": "^4.4.4",
+    "npm-run-all": "^4.0.2"
   },
   "dependencies": {
-    "ramda": "0.21.0"
+    "ramda": "0.23.0"
   }
 }
