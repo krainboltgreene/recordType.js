@@ -1,7 +1,5 @@
 # recordType
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/krainboltgreene/recordType.js.svg)](https://greenkeeper.io/)
-
 An implementation of the Record datatype.
 
 ![Version][BADGE_VERSION]
